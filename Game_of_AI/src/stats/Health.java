@@ -11,15 +11,22 @@ public class Health implements Runnable {
 
 	public Health() {
 		main.World.log("Health Running");
-		while (variables.Variables.isRunning == true) {
-			if (variables.Variables.health == 0) {
+		while (variables.Variables.isRunning() == true) {
+			if (variables.Variables.getHealth() == 0) {
 				character.MC.Die();
-			} else if (variables.Variables.health <= 100 && timer > 500) {
+			} else if (variables.Variables.getHealth() <= 100 && timer > 10) {
 				character.MC.complain();
 				timer = 0;
-			} else
+			} else {
 				timer++;
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
+			}
 		}
 	}
 
