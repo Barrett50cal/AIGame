@@ -12,13 +12,13 @@ public class MC implements Runnable {
 	private static int localX;
 
 	public static void complain() {
-		if (Variables.getHealth() < 50) {
-			System.out.println("I'm injured.");
+		if (Variables.getHealth() <  5650) {
+			// System.out.println("I'm injured.");
 		} else if (Variables.getHunger() < 50) {
-			System.out.println("I'm Hungry");
+			// System.out.println("I'm Hungry");
 			moveToFood();
 		} else {
-			System.out.println("I'm Happy");
+			// System.out.println("I'm Happy");
 			//
 		}
 
@@ -27,24 +27,30 @@ public class MC implements Runnable {
 	private static void moveToFood() {
 		if (Math.sqrt(Math.pow(
 				Variables.getX() - variables.Variables.getTreex(), 2)
-				+ Math.pow(
-						Variables.getY() - variables.Variables.getTreey(),
-						2)) <= size) {
+				+ Math.pow(Variables.getY() - variables.Variables.getTreey(), 2)) <= Variables
+				.getSize()) {
 			Variables.setHunger(variables.Variables.getHunger()
 					+ (100 - variables.Variables.getHunger()));
 		}
-		localY = variables.Variables.getTreex();
+		localX = variables.Variables.getTreex();
 		localY = variables.Variables.getTreey();
-		Variables.setX(localX - Variables.speed);
-		Variables.setY(localY - Variables.speed);
-		if (Variables.getX() < variables.Variables.getTreex())
-			localX += Variables.speed;
-		else
-			localX -= Variables.speed;
+		
+			if (variables.Variables.getTreex() > Variables.getX())
+				Variables.setX(Variables.getX() + Variables.speed);
+			if (variables.Variables.getTreex() < Variables.getX())
+				Variables.setX(Variables.getX() - Variables.speed);
+
 		if (Variables.getY() < variables.Variables.getTreey())
-			localY += Variables.speed;
-		else
-			localY -= Variables.speed;
+			if (variables.Variables.getTreey() - Variables.getY() > 0)
+				Variables.setY(Variables.getY() + Variables.speed);
+			else if (variables.Variables.getTreey() - Variables.getY() < 0)
+				Variables.setY(Variables.getY() - Variables.speed);
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public static void Die() {
@@ -68,6 +74,7 @@ public class MC implements Runnable {
 
 		new Thread(new stats.Hunger()).start();
 		new Thread(new stats.Health()).start();
+		new Thread(new stats.Social()).start();
 
 	}
 }

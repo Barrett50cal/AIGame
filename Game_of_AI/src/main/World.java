@@ -34,7 +34,6 @@ public class World extends Applet implements KeyListener, ActionListener {
 
 	private Image dblImage;
 	private Graphics dblg;
-	
 
 	ActionListener taskPerformer = new ActionListener() {
 		public void actionPerformed(ActionEvent evt) {
@@ -139,17 +138,21 @@ public class World extends Applet implements KeyListener, ActionListener {
 		g.drawRect(0, 370, 100, 20);
 
 		g.fillRect(0, 370, Variables.getHealth(), 20);
-		g.setColor(Color.black);
-		g.drawString("Health", 35, 385);
 
 		g.setColor(Color.yellow);
 		g.fillRect(280, 370, Variables.getHunger(), 20);
-		g.setColor(Color.black);
-		g.drawString("Hunger", 310, 385);
+		g.setColor(Color.blue);
+		g.fillRect(280, 340, Variables.getSocial(), 20);
 
 		g.setColor(Color.green);
 		g.fillOval(variables.Variables.getTreex(),
-				variables.Variables.getTreey(), Variables.getSize(), Variables.getSize());
+				variables.Variables.getTreey(), Variables.getSize(),
+				Variables.getSize());
+		g.setColor(Color.black);
+
+		g.drawString("Social", 315, 355);
+		g.drawString("Hunger", 315, 385);
+		g.drawString("Health", 35, 385);
 
 	}
 

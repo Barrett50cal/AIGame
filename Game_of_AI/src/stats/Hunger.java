@@ -36,14 +36,14 @@ public class Hunger implements Runnable, ActionListener {
 		public void actionPerformed(ActionEvent evt) {
 			if (variables.Variables.getHunger() < 1) {
 				variables.Variables.setHealth(variables.Variables.getHealth() - 1);
-			
+				character.MC.complain();
 			} else if (variables.Variables.getHunger() < 50) {
 				character.MC.complain();
 				variables.Variables
-						.setHunger(variables.Variables.getHunger() - 1);
+						.setHunger(variables.Variables.getHunger() - 2);
 			} else {
 				variables.Variables
-						.setHunger(variables.Variables.getHunger() - 1);
+						.setHunger(variables.Variables.getHunger() - 2);
 			}
 
 		}

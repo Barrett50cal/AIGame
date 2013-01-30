@@ -100,6 +100,7 @@ public abstract class Variables {
 	private static int treex;
 	private static int treey;
 	private static int size;
+	private static int social = 100;
 
 	/**
 	 * @return the treex
@@ -137,5 +138,13 @@ public abstract class Variables {
 
 	public static void setSize(int size) {
 		Variables.size = size;
+	}
+
+	public static int getSocial() {
+		return social;
+	}
+
+	public static void setSocial(int social) {
+		Variables.social = social;
 	}
 }

@@ -8,6 +8,9 @@ class Kill implements Runnable {
 		character.MC.kill();
 		stats.Hunger.kill();
 		stats.Health.kill();
+		stats.Social.kill();
+		enviro.Tree.kill();
 
 	}
+
 }
