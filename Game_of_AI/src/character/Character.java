@@ -90,19 +90,37 @@ public class Character implements Runnable {
 	}
 	
 	protected void findABuddy() {
-		if (x < main.World.getMainChar().getX()) {
-			isRPress = true;
-		} else if (x > main.World.getMainChar().getX()) {
-			isLPress = true;
-		}
-		if (y > main.World.getMainChar().getY()) {
-			isUPress = true;
-		} else if (y < main.World.getMainChar().getY()) {
-			isDPress = true;
-		}
-		if (Math.sqrt(Math.pow(x - main.World.getMainChar().getX(), 2) + Math.pow(y - main.World.getMainChar().getY(), 2)) <= 30) {
-			socialize();
-			stopMoving();
+		
+		if (name.equals("Friend")) {
+			if (x < main.World.getMainChar().getX()) {
+				isRPress = true;
+			} else if (x > main.World.getMainChar().getX()) {
+				isLPress = true;
+			}
+			if (y > main.World.getMainChar().getY()) {
+				isUPress = true;
+			} else if (y < main.World.getMainChar().getY()) {
+				isDPress = true;
+			}
+			if (Math.sqrt(Math.pow(x - main.World.getMainChar().getX(), 2) + Math.pow(y - main.World.getMainChar().getY(), 2)) <= 25) {
+				socialize();
+				stopMoving();
+			}
+		} else {
+			if (x < main.World.getFriendChar().getX()) {
+				isRPress = true;
+			} else if (x > main.World.getFriendChar().getX()) {
+				isLPress = true;
+			}
+			if (y > main.World.getFriendChar().getY()) {
+				isUPress = true;
+			} else if (y < main.World.getFriendChar().getY()) {
+				isDPress = true;
+			}
+			if (Math.sqrt(Math.pow(x - main.World.getFriendChar().getX(), 2) + Math.pow(y - main.World.getFriendChar().getY(), 2)) <= 25) {
+				socialize();
+				stopMoving();
+			}
 		}
 		
 	}
@@ -277,7 +295,7 @@ public class Character implements Runnable {
 	}
 	
 	private void socialize() {
-		// TODO Auto-generated method stub
+		social.setSocial(social.getSocial() + (100 - social.getSocial()));
 		
 	}
 	
