@@ -1,39 +1,37 @@
 package stats;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.Timer;
+
 public class Health implements Runnable {
-
-	private static int timer;
-
+	
 	public static void kill() {
 		// TODO Auto-generated method stub
 		main.World.log("Killing Health");
+		Controller.stop();
+		
 	}
-
-	public Health() {
-		main.World.log("Health Running");
-		while (variables.Variables.isRunning() == true) {
-			if (variables.Variables.getHealth() == 0) {
-				character.MC.Die();
-			} else if (variables.Variables.getHealth() <= 100 && timer > 10) {
-				character.MC.complain();
-				timer = 0;
-			} else {
-				timer++;
-				try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-			}
-		}
-	}
-
+	
+	ActionListener			taskPerformer	= new ActionListener() {
+												@Override
+												public void actionPerformed(ActionEvent evt) {
+													if (variables.Variables.getHealth() == 0) {
+														character.MC.Die();
+													} else {
+														variables.Variables.setHunger(variables.Variables.getHunger() - 2);
+													}
+													
+												}
+											};
+	private static Timer	Controller;
+	
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-
+		main.World.log("Health Running");
+		Controller = new Timer(100, taskPerformer);
+		Controller.start();
 	}
-
+	
 }
