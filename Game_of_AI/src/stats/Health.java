@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import javax.swing.Timer;
 
 public class Health implements Runnable {
-	
 	public static void kill() {
 		// TODO Auto-generated method stub
 		main.World.log("Killing Health");
@@ -14,18 +13,30 @@ public class Health implements Runnable {
 		
 	}
 	
+	private int				health			= 100;
+	
 	ActionListener			taskPerformer	= new ActionListener() {
 												@Override
 												public void actionPerformed(ActionEvent evt) {
-													if (variables.Variables.getHealth() == 0) {
-														character.MC.Die();
-													} else {
-														variables.Variables.setHunger(variables.Variables.getHunger() - 2);
+													if (getHealth() == 0) {
+//														character.MC.Die();
+														new Thread(new main.Kill()).start();
 													}
 													
 												}
 											};
 	private static Timer	Controller;
+	
+	public Health() {
+		run();
+	}
+	
+	/**
+	 * @return the health
+	 */
+	public int getHealth() {
+		return health;
+	}
 	
 	@Override
 	public void run() {
@@ -34,4 +45,11 @@ public class Health implements Runnable {
 		Controller.start();
 	}
 	
+	/**
+	 * @param health
+	 *            the health to set
+	 */
+	public void setHealth(int health) {
+		this.health = health;
+	}
 }

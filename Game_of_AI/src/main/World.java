@@ -12,18 +12,35 @@ import java.util.Random;
 
 import javax.swing.Timer;
 
-import variables.Variables;
+import enviro.Tree;
 
-public class World extends Applet implements KeyListener, ActionListener {
+public class World extends Applet implements KeyListener {
 	
-	private static final long	serialVersionUID	= 7108480780303312481L;
-	private static Random		rand				= new Random();
+	private static final long			serialVersionUID	= 7108480780303312481L;
+	private static Random				rand				= new Random();
 	
-	private static Timer		Controller, Controller2;
+	private static character.Character	MainChar;
+	
+	private static character.Character	FriendChar;
+	private static Timer				Controller, Controller2;
+	
+	/**
+	 * @return the friendChar
+	 */
+	public static character.Character getFriendChar() {
+		return FriendChar;
+	}
+	
+	/**
+	 * @return the mainChar
+	 */
+	public static character.Character getMainChar() {
+		return MainChar;
+	}
 	
 	public static void kill() {
 		Controller.stop();
-		Controller2.stop();
+		
 	}
 	
 	public static void log(String x) {
@@ -32,6 +49,7 @@ public class World extends Applet implements KeyListener, ActionListener {
 	}
 	
 	private Image		dblImage;
+	
 	private Graphics	dblg;
 	
 	ActionListener		repaintPerformer	= new ActionListener() {
@@ -41,90 +59,54 @@ public class World extends Applet implements KeyListener, ActionListener {
 												}
 											};
 	
-	ActionListener		movementListener	= new ActionListener() {
-												@Override
-												public void actionPerformed(ActionEvent evt) {
-													if (Variables.isRPress() == true) {
-														Variables.setX(Variables.getX() + Variables.speed);
-														
-													}
-													if (Variables.isLPress() == true) {
-														Variables.setX(Variables.getX() - Variables.speed);
-														
-													}
-													if (Variables.isDPress() == true) {
-														Variables.setY(Variables.getY() + Variables.speed);
-														
-													}
-													if (Variables.isUPress() == true) {
-														Variables.setY(Variables.getY() - Variables.speed);
-														
-													}
-												}
-											};
-	
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-	
 	@Override
 	public void init() {
-		variables.Variables.setAlive(true);
+		
+		MainChar = new character.Character("MC", true, true);
+		MainChar.setAlive(true);
+		
+		FriendChar = new character.Character("Friend", true, true);
+		FriendChar.setAlive(true);
+		FriendChar.setX(200);
 		Controller = new Timer(16, repaintPerformer);
-		Controller2 = new Timer(5, movementListener);
 		Controller.start();
-		Controller2.start();
 		new Thread(new enviro.Tree()).start();
-		new Thread(new character.MC()).start();
-		Variables.setSize(rand.nextInt(20) + 20);
-		variables.Variables.setTreex(rand.nextInt(125) + 50);
-		variables.Variables.setTreey(rand.nextInt(125) + 20);
+		Tree.setSize(rand.nextInt(20) + 20);
+		Tree.setTreex(rand.nextInt(125) + 50);
+		Tree.setTreey(rand.nextInt(125) + 20);
 		addKeyListener(this);
 		this.setSize(400, 400);
 	}
 	
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_D) {
-			Variables.setRPress(true);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_A) {
-			Variables.setLPress(true);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_S) {
-			Variables.setDPress(true);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_W) {
-			Variables.setUPress(true);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-			
-			if (Math.sqrt(Math.pow(Variables.getX() - variables.Variables.getTreeX(), 2) + Math.pow(Variables.getY() - variables.Variables.getTreeY(), 2)) <= Variables
-					.getSize()) {
-				Variables.setHunger(variables.Variables.getHunger() + (100 - variables.Variables.getHunger()));
-			} else {
-				System.out.println("Not in range of tree");
-			}
-			
-		}
-		
+//		if (e.getKeyCode() == KeyEvent.VK_D) {
+//			MainChar.setRPress(true);
+//		}
+//		if (e.getKeyCode() == KeyEvent.VK_A) {
+//			MainChar.setLPress(true);
+//		}
+//		if (e.getKeyCode() == KeyEvent.VK_S) {
+//			MainChar.setDPress(true);
+//		}
+//		if (e.getKeyCode() == KeyEvent.VK_W) {
+//			MainChar.setUPress(true);
+//		}		
 	}
 	
 	@Override
 	public void keyReleased(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_D) {
-			Variables.setRPress(false);
+			MainChar.setRPress(false);
 		}
 		if (e.getKeyCode() == KeyEvent.VK_A) {
-			Variables.setLPress(false);
+			MainChar.setLPress(false);
 		}
 		if (e.getKeyCode() == KeyEvent.VK_S) {
-			Variables.setDPress(false);
+			MainChar.setDPress(false);
 		}
 		if (e.getKeyCode() == KeyEvent.VK_W) {
-			Variables.setUPress(false);
+			MainChar.setUPress(false);
 		}
 		
 	}
@@ -135,48 +117,69 @@ public class World extends Applet implements KeyListener, ActionListener {
 		
 	}
 	
-	public void loop() {
-		
-		if (variables.Variables.isRunning()) {
-			repaint();
-			try {
-				Thread.sleep(500);
-			} catch (final InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
-	
 	@Override
 	public void paint(Graphics g) {
-		if (Variables.isAlive()) {
+		if (MainChar != null && MainChar.isAlive()) {
 			g.setColor(Color.red);
-			g.drawOval(Variables.getX(), Variables.getY(), 25, 25);
+			g.drawOval(MainChar.getX(), MainChar.getY(), 25, 25);
+			
+			g.setColor(Color.red);
 			g.drawRect(0, 370, 100, 20);
+			g.fillRect(0, 370, MainChar.getHealth(), 20);
+			
+			g.setColor(Color.yellow);
+			g.fillRect(280, 370, MainChar.getHunger(), 20);
+			g.setColor(Color.blue);
+			g.fillRect(280, 340, MainChar.getSocial(), 20);
+			g.setColor(Color.black);
+			g.drawString("Social", 315, 355);
+			g.drawString("Hunger", 315, 385);
+			g.drawString("Health", 35, 385);
 		}
 		
-		g.fillRect(0, 370, Variables.getHealth(), 20);
-		
-		g.setColor(Color.yellow);
-		g.fillRect(280, 370, Variables.getHunger(), 20);
-		g.setColor(Color.blue);
-		g.fillRect(280, 340, Variables.getSocial(), 20);
+		if (FriendChar != null && FriendChar.isAlive()) {
+			g.setColor(Color.black);
+			g.drawOval(FriendChar.getX(), FriendChar.getY(), 25, 25);
+			
+			g.setColor(Color.red);
+			
+			g.drawRect(0, 340, 100, 20);
+			g.fillRect(0, 340, FriendChar.getHealth(), 20);
+			
+			g.setColor(Color.yellow);
+			g.fillRect(280, 310, FriendChar.getHunger(), 20);
+			g.setColor(Color.blue);
+			g.fillRect(280, 280, FriendChar.getSocial(), 20);
+			g.setColor(Color.black);
+			g.drawString("Social", 315, 295);
+			g.drawString("Hunger", 315, 325);
+			g.drawString("Health", 35, 355);
+		}
 		
 		g.setColor(Color.green);
-		g.fillOval(variables.Variables.getTreeX(), variables.Variables.getTreeY(), Variables.getSize(), Variables.getSize());
-		g.setColor(Color.black);
+		g.fillOval(Tree.getTreex(), Tree.getTreey(), Tree.getSize(), Tree.getSize());
 		
-		g.drawString("Social", 315, 355);
-		g.drawString("Hunger", 315, 385);
-		g.drawString("Health", 35, 385);
-		
+	}
+	
+	/**
+	 * @param friendChar
+	 *            the friendChar to set
+	 */
+	public void setFriendChar(character.Character friendChar) {
+		FriendChar = friendChar;
+	}
+	
+	/**
+	 * @param mainChar
+	 *            the mainChar to set
+	 */
+	public void setMainChar(character.Character mainChar) {
+		MainChar = mainChar;
 	}
 	
 	@Override
 	public void stop() {
 		new Thread(new main.Kill()).start();
-		variables.Variables.setRunning(false);
 	}
 	
 	@Override
