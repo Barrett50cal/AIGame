@@ -18,7 +18,7 @@ public class Hunger implements Runnable {
 											}
 										};
 	
-	private final Timer	Controller		= new Timer(125, taskPerformer);
+	private final Timer	Controller		= new Timer(100, taskPerformer);
 	
 	public Hunger() {
 		run();

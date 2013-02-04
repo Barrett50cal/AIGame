@@ -1,78 +1,112 @@
-package character;
+package characters;
+
+import helpers.Utils;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.Timer;
 
+import main.World;
 import stats.Health;
 import stats.Hunger;
 import stats.Social;
 import enviro.Tree;
 
 public class Character implements Runnable {
-	private int				x					= 0, y = 0;
+	protected static final int	MAX_DISTANCE		= 200;
 	
-	private boolean			isAlive;
-	private boolean			isUPress;
-	private boolean			isDPress;
-	private boolean			isLPress;
-	private boolean			isRPress;
-	private Social			social;
+	private int					x					= 0, y = 0;
 	
-	private Health			health;
+	private boolean				isAlive;
+	private boolean				isUPress;
+	private boolean				isDPress;
+	private boolean				isLPress;
+	private boolean				isRPress;
+	private Social				social;
+	private final List<Integer>	DistList			= new ArrayList<Integer>();
+	private Health				health;
 	
-	private Hunger			hunger;
+	private Hunger				hunger;
 	
-	public final int		speed				= 1;
+	public final int			speed				= 1;
 	
-	ActionListener			taskPerformer		= new ActionListener() {
-													@Override
-													public void actionPerformed(ActionEvent evt) {
-														if (health.getHealth() < 50) {
+	ActionListener				taskPerformer		= new ActionListener() {
+														@Override
+														public void actionPerformed(ActionEvent evt) {
+															if (health.getHealth() < 50) {
+																
+															}
+															if (hunger.getHunger() < 50) {
+																
+																moveToFood();
+															}
+															if (social != null && social.getSocial() < 50) {
+																findABuddy();
+															}
 															
 														}
-														if (hunger.getHunger() < 50) {
-															
-															moveToFood();
+													};
+	ActionListener				movementListener	= new ActionListener() {
+														
+														@Override
+														public void actionPerformed(ActionEvent evt) {
+															if (isRPress == true) {
+																x = (x + speed);
+																
+															}
+															if (isLPress == true) {
+																x = (x - speed);
+																
+															}
+															if (isDPress == true) {
+																y = (y + speed);
+																
+															}
+															if (isUPress == true) {
+																y = (y - speed);
+																
+															}
 														}
-														if (social.getSocial() < 50) {
-															findABuddy();
+													};
+	ActionListener				fleeForYourLife		= new ActionListener() {
+														@Override
+														public void actionPerformed(ActionEvent evt) {
+															DistList.clear();
+															for (int i = 0; i < World.getMonsterArray().size(); i++) {
+//																System.out.println(i);
+//																System.out.println(World.getMonsterArray().get(i));
+																for (int x = 0; x <= MAX_DISTANCE; x++) {
+																	if (Utils.getDistance(World.getCharArray(i).getX(),
+																			World.getCharArray(i).getY(), x, y) < x) {
+																		DistList.add(x);
+																		break;
+																	}
+																}
+																if (!DistList.isEmpty()) {
+																	if (helpers.Utils.getDistance(
+																			World.getMonsterArray()
+																					.get(DistList.indexOf(Collections.min(DistList)))
+																					.getX(),
+																			World.getMonsterArray()
+																					.get(DistList.indexOf(Collections.min(DistList)))
+																					.getY(), x, y) < 50) {
+																		flee();
+																	}
+																	
+																}
+															}
 														}
 														
-													}
-												};
-	ActionListener			movementListener	= new ActionListener() {
-													
-													@Override
-													public void actionPerformed(ActionEvent evt) {
-														if (isRPress == true) {
-															x = (x + speed);
-															
-														}
-														if (isLPress == true) {
-															x = (x - speed);
-															
-														}
-														if (isDPress == true) {
-															y = (y + speed);
-															
-														}
-														if (isUPress == true) {
-															y = (y - speed);
-															
-														}
-													}
-												};
-	
-	private final String	name;
-	private final Timer		Controller			= new Timer(50, taskPerformer), Controller2 = new Timer(5, movementListener);
-	
-	public Character(String x, boolean isLiving) {
-		isAlive = isLiving;
-		name = x;
-		run();
-	}
+													};
+	private final String		name;
+	private final Timer			Controller			= new Timer(50, taskPerformer);
+	public final int			RefreshSpeed		= 5;
+	private final Timer			Controller2			= new Timer(RefreshSpeed, movementListener);
+	private final Timer			Controller3			= new Timer(200, fleeForYourLife);
 	
 	public Character(String x, boolean isLiving, boolean isControlled) {
 		isAlive = isLiving;
@@ -80,6 +114,7 @@ public class Character implements Runnable {
 			System.out.println("Controller Running");
 			Controller2.start();
 		}
+		Controller3.start();
 		name = x;
 		run();
 	}
@@ -89,7 +124,7 @@ public class Character implements Runnable {
 		
 	}
 	
-	protected void findABuddy() {
+	private void findABuddy() {
 		
 		if (name.equals("Friend")) {
 			if (x < main.World.getMainChar().getX()) {
@@ -123,6 +158,25 @@ public class Character implements Runnable {
 			}
 		}
 		
+	}
+	
+	private void flee() {
+		if (Utils.getDistance(this, World.getMonsterArray().get(DistList.indexOf(Collections.min(DistList)))) < 50) {
+			if (x < World.getMonsterArray().get(DistList.indexOf(Collections.min(DistList))).getX()) {
+				isLPress = true;
+			} else if (x > World.getMonsterArray().get(DistList.indexOf(Collections.min(DistList))).getX()) {
+				isRPress = true;
+			}
+			
+			if (y > World.getMonsterArray().get(DistList.indexOf(Collections.min(DistList))).getY()) {
+				isDPress = true;
+			} else if (y < World.getMonsterArray().get(DistList.indexOf(Collections.min(DistList))).getY()) {
+				isUPress = true;
+			}
+		} else {
+			stopMoving();
+		}
+		;
 	}
 	
 	public int getHealth() {
@@ -305,5 +359,10 @@ public class Character implements Runnable {
 		isLPress = false;
 		isRPress = false;
 		
+	}
+	
+	@Override
+	public String toString() {
+		return name;
 	}
 }
