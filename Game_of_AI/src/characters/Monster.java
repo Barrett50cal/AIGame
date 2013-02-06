@@ -30,21 +30,6 @@ public class Monster {
 															}
 															
 														};
-	private int						x					= 0, y = 0;
-	private boolean					isAlive;
-	private boolean					isUPress;
-	private boolean					isDPress;
-	private boolean					isLPress;
-	private boolean					isRPress;
-	private Social					social;
-	private String					name;
-	private Health					health;
-	private Hunger					hunger;
-	public final int				RefreshSpeed		= 4;
-	public final int				speed				= 1;
-	private final List<Integer>		DistList			= new ArrayList<Integer>();
-	Timer							CCTimer				= new Timer(100, ControllerCustom);
-	private characters.Character	target;
 	ActionListener					movementListener	= new ActionListener() {
 															
 															@Override
@@ -67,7 +52,21 @@ public class Monster {
 																}
 															}
 														};
-	
+	private int						x					= 0, y = 0;
+	private boolean					isAlive;
+	private boolean					isUPress;
+	private boolean					isDPress;
+	private boolean					isLPress;
+	private boolean					isRPress;
+	private Social					social;
+	private String					name;
+	private Health					health;
+	private Hunger					hunger;
+	public final int				RefreshSpeed		= 4;
+	public final int				speed				= 1;
+	private final List<Integer>		DistList			= new ArrayList<Integer>();
+	Timer							CCTimer				= new Timer(100, ControllerCustom);
+	private characters.Character	target;
 	private final Timer				Controller2			= new Timer(RefreshSpeed, movementListener);
 	
 	public Monster(String x, boolean isLiving, boolean isControllerd) {
@@ -87,9 +86,9 @@ public class Monster {
 		for (int i = 0; i < World.getCharArray().length; i++) {
 //			System.out.println(i);
 //			System.out.println(World.getCharArray(i));
-			for (int x = 0; x <= MAX_DISTANCE; x++) {
-				if (Utils.getDistance(World.getCharArray(i).getX(), World.getCharArray(i).getY(), x, y) < x) {
-					DistList.add(x);
+			for (int xer = 0; xer <= MAX_DISTANCE; xer++) {
+				if (Utils.getDistance(World.getCharArray(i).getX(), World.getCharArray(i).getY(), x, y) < xer) {
+					DistList.add(xer);
 					break;
 				}
 			}
@@ -203,19 +202,33 @@ public class Monster {
 		}
 		
 		if (x < target.getX()) {
+			if (isLPress) {
+				stopMoving();
+			}
 			isRPress = true;
 		} else if (x > target.getX()) {
+			if (isRPress) {
+				stopMoving();
+			}
 			isLPress = true;
 		}
 		if (y > target.getY()) {
+			if (isDPress) {
+				stopMoving();
+			}
 			isUPress = true;
 		} else if (y < target.getY()) {
+			if (isUPress) {
+				stopMoving();
+			}
 			isDPress = true;
 		}
 		if (Math.sqrt(Math.pow(x - target.getX(), 2) + Math.pow(y - target.getY(), 2)) <= 25 - 2) {
 			eat();
 			stopMoving();
+			
 		}
+		target = null;
 	}
 	
 	public void run() {

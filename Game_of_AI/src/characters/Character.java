@@ -56,18 +56,28 @@ public class Character implements Runnable {
 														public void actionPerformed(ActionEvent evt) {
 															if (isRPress == true) {
 																x = (x + speed);
+																if (x > 400) {
+																	x = 0;
+																}
 																
 															}
 															if (isLPress == true) {
 																x = (x - speed);
-																
+																if (x < 0) {
+																	x = 400;
+																}
 															}
 															if (isDPress == true) {
 																y = (y + speed);
-																
+																if (y > 400) {
+																	y = 0;
+																}
 															}
 															if (isUPress == true) {
 																y = (y - speed);
+																if (y < 0) {
+																	y = 400;
+																}
 																
 															}
 														}
@@ -95,6 +105,8 @@ public class Character implements Runnable {
 																					.get(DistList.indexOf(Collections.min(DistList)))
 																					.getY(), x, y) < 50) {
 																		flee();
+																	} else {
+																		stopMoving();
 																	}
 																	
 																}
